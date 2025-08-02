@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Access - Dot Mandala</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  <style>
+    :root {
+      --primary-color: #4f46e5;
+      --background-color: #f4f4f5;
+      --text-color: #18181b;
+      --subtle-text-color: #71717a;
+      --container-bg: #ffffff;
+      --border-color: #e4e4e7;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .main-wrapper {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+    }
+
+    /* Left Panel Styling */
+    .left-panel {
+      flex: 3;
+      background-image: url('https://cdn.cosmos.so/b579e59b-7cfc-4a6a-a51e-4630c777c1c1?format=jpeg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3rem;
+      color: white;
+    }
+
+    .left-panel::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1;
+    }
+
+    .logo, .testimonial {
+      position: relative;
+      z-index: 2;
+    }
+
+    .logo {
+      font-family: 'Bitter', serif;
+      font-weight: 700;
+      font-size: 2.5rem;
+    }
+
+    .testimonial {
+      max-width: 450px;
+    }
+
+    .testimonial p {
+      font-size: 1.25rem;
+      line-height: 1.6;
+      margin: 0 0 1rem 0;
+    }
+
+    /* Right Panel (Login Form) Styling */
+    .login-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: var(--container-bg);
+      padding: 2rem;
+    }
+
+    .form-box {
+      width: 100%;
+      max-width: 400px;
+      animation: fadeIn 1s ease-out;
+    }
+
+    .form-title {
+      font-family: 'Bitter', serif;
+      font-weight: 700;
+      font-size: 2.25rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-subtitle {
+      color: var(--subtle-text-color);
+      margin-bottom: 2.5rem;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 1rem;
+      padding-left: 3rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      font-size: 1rem;
+      font-family: 'Inter', sans-serif;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      box-sizing: border-box;
+    }
+
+    .input-field:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+    }
+
+    .input-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--subtle-text-color);
+      pointer-events: none;
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .primary-btn:disabled {
+        background-color: #a5b4fc;
+        cursor: not-allowed;
+    }
+
+    .primary-btn:hover:not(:disabled) {
+      background-color: #4338ca;
+    }
+    
+    /* Notification Box Styles */
+    #notification-box {
+      display: none;
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background-color: #fff;
+      color: var(--text-color);
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1001;
+      text-align: center;
+      width: 90%;
+      max-width: 400px;
+      font-family: 'Inter', sans-serif;
+    }
+    .notification-content p {
+      margin: 0 0 1rem 0;
+      font-size: 1rem;
+    }
+    .notification-content button {
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .left-panel {
+            display: none;
+        }
+        .login-container {
+            flex: 1;
+        }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-wrapper">
+
+    <div class="left-panel">
+      <div class="logo">Admin Panel</div>
+      <div class="testimonial">
+        <p>"The control center for the Dot Mandala platform. Manage users, content, and settings."</p>
+      </div>
+    </div>
+
+    <div class="login-container">
+
+      <!-- Invitation Code Form Box -->
+      <div id="login-box" class="form-box">
+        <h1 class="form-title">Admin Invitation</h1>
+        <p class="form-subtitle">Enter your invitation code to access the panel.</p>
+
+        <form class="login-form" onsubmit="accessWithCode(event)">
+          <div class="input-group">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path></svg>
+            <input type="text" id="invitation-code" class="input-field" placeholder="Invitation Code" required>
+          </div>
+          <button type="submit" class="primary-btn">Access Panel</button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Custom Notification Box -->
+  <div id="notification-box" style="display:none;">
+    <div class="notification-content">
+      <p id="notification-message"></p>
+      <button onclick="closeNotification()">OK</button>
+    </div>
+  </div>
+
+  <script>
+    // --- Firebase Configuration ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyA0oSFRQz5aV5lF1HJVCttA3nfj0BQypbE",
+      authDomain: "dot-mandala-lms.firebaseapp.com",
+      projectId: "dot-mandala-lms",
+      storageBucket: "dot-mandala-lms.appspot.com",
+      messagingSenderId: "815985106033",
+      appId: "1:815985106033:web:4e770d4497b175025d8fd0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // --- Custom Notification Box ---
+    function showNotification(message) {
+      const notificationBox = document.getElementById('notification-box');
+      const notificationMessage = document.getElementById('notification-message');
+      notificationMessage.textContent = message;
+      notificationBox.style.display = "block";
+    }
+
+    function closeNotification() {
+      const notificationBox = document.getElementById('notification-box');
+      notificationBox.style.display = "none";
+    }
+
+    // --- REVISED Access with Invitation Code Function ---
+    async function accessWithCode(e) {
+      e.preventDefault();
+      const enteredCode = document.getElementById('invitation-code').value;
+      const accessButton = e.target.querySelector('button[type="submit"]');
+      
+      // Disable button to prevent multiple clicks
+      accessButton.disabled = true;
+      accessButton.textContent = 'Verifying...';
+
+      if (!enteredCode) {
+          showNotification("Please enter an invitation code.");
+          accessButton.disabled = false;
+          accessButton.textContent = 'Access Panel';
+          return;
+      }
+
+      try {
+        // Step 1: Check Firestore for the invitation code.
+        const codesRef = db.collection('invitationCodes');
+        const snapshot = await codesRef.where('code', '==', enteredCode).where('isUsed', '==', false).get();
+
+        if (snapshot.empty) {
+            throw new Error("Invalid or already used invitation code. Access denied.");
+        }
+
+        // Step 2: If code is valid, sign in anonymously.
+        await auth.signInAnonymously();
+        console.log("Anonymous sign-in successful for admin.");
+
+        // Step 3: Now that we are authenticated, mark the code as used.
+        const docId = snapshot.docs[0].id;
+        await db.collection('invitationCodes').doc(docId).update({
+            isUsed: true
+        });
+        console.log("Invitation code marked as used.");
+
+        // Step 4: Set the session flag and redirect.
+        sessionStorage.setItem('isAdmin', 'true');
+        window.location.href = "adminpanel.html";
+
+      } catch (error) {
+        console.error("Authentication or Firestore Error: ", error);
+        showNotification("An error occurred: " + error.message);
+        // Re-enable the button on failure
+        accessButton.disabled = false;
+        accessButton.textContent = 'Access Panel';
+      }
+    }
+
+    // On page load, if a user is already signed in, sign them out.
+    // This prevents conflicts without interfering with the new sign-in attempt.
+    if (auth.currentUser) {
+        auth.signOut();
+    }
+  </script>
+</body>
+</html>

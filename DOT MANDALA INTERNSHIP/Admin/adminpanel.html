@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Dot Mandala</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <style>
+    :root {
+      --primary-color: #4f46e5;
+      --secondary-color: #6366f1;
+      --background-color: #f8fafc;
+      --container-bg: #ffffff;
+      --text-color: #1e293b;
+      --subtle-text-color: #64748b;
+      --border-color: #e2e8f0;
+      --shadow-color: rgba(100, 116, 139, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+    
+    /* This wrapper will be hidden until auth is confirmed */
+    .container-wrapper {
+        display: flex;
+        width: 100%;
+        max-width: 1400px;
+        height: 90vh;
+        opacity: 0; /* Initially hidden */
+        transition: opacity 0.5s ease-in-out;
+        visibility: hidden;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      background-color: var(--container-bg);
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      width: 280px;
+      padding: 2.5rem 1.5rem;
+      background-color: var(--container-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .sidebar-header {
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+
+    .sidebar nav {
+      flex: 1;
+      margin-top: 2rem;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+    }
+
+    .sidebar nav ul li {
+      margin-bottom: 0.75rem;
+    }
+
+    .sidebar nav ul li a {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      color: var(--subtle-text-color);
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .sidebar nav ul li a:hover {
+      background-color: var(--background-color);
+      color: var(--primary-color);
+    }
+    
+    .sidebar nav ul li a.active {
+      background-color: var(--background-color);
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .sidebar nav ul li a i {
+      margin-right: 12px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .logout {
+        margin-top: auto;
+    }
+
+    .logout-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--subtle-text-color);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .logout-btn:hover {
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+
+    /* Main Content Styling */
+    .main-content {
+      flex: 1;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1rem;
+      color: var(--subtle-text-color);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--container-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      body {
+        padding: 0;
+      }
+      .container-wrapper {
+        height: 100vh;
+        max-width: 100%;
+      }
+      .container {
+        flex-direction: column;
+        height: auto;
+        border-radius: 0;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+      }
+      .sidebar-header {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .sidebar nav {
+        margin-top: 0;
+        flex: none;
+      }
+      .sidebar nav ul {
+        display: flex;
+        gap: 1.5rem;
+      }
+      .sidebar nav ul li a {
+        padding: 0.5rem 0.75rem;
+      }
+      .sidebar nav ul li a span {
+          display: none;
+      }
+      .sidebar nav ul li a i {
+          margin-right: 0;
+      }
+      .logout {
+          display: none;
+      }
+      .main-content {
+          padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <div id="container-wrapper" class="container-wrapper">
+    <div class="container">
+      <aside class="sidebar">
+        <div>
+          <div class="sidebar-header">
+            <h2 class="logo">Admin Panel</h2>
+          </div>
+          <nav>
+            <ul>
+              <li><a href="#" class="active"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
+              <li><a href="#"><i class="fas fa-users"></i> <span>Users</span></a></li>
+              <li><a href="#"><i class="fas fa-book"></i> <span>Courses</span></a></li>
+              <li><a href="#"><i class="fas fa-chart-bar"></i> <span>Analytics</span></a></li>
+              <li><a href="#"><i class="fas fa-cogs"></i> <span>Settings</span></a></li>
+            </ul>
+          </nav>
+        </div>
+        <div class="logout">
+            <button class="logout-btn" onclick="logOut()">Log Out</button>
+        </div>
+      </aside>
+      <main class="main-content">
+        <header>
+          <h1>Admin Dashboard</h1>
+          <p>Welcome, Admin. Here's a summary of the platform's activity.</p>
+        </header>
+        <section class="card-grid">
+          <div class="card">
+            <h3>Total Users</h3>
+            <p>1,250 registered users.</p>
+          </div>
+          <div class="card">
+            <h3>Active Courses</h3>
+            <p>58 active courses on the platform.</p>
+          </div>
+          <div class="card">
+            <h3>New Signups (24h)</h3>
+            <p>15 new users have signed up today.</p>
+          </div>
+          <div class="card">
+            <h3>Server Status</h3>
+            <p>All systems are online and operational.</p>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+  
+  <script>
+    // --- Firebase Configuration ---
+    const firebaseConfig = {
+        apiKey: "AIzaSyA0oSFRQz5aV5lF1HJVCttA3nfj0BQypbE",
+        authDomain: "dot-mandala-lms.firebaseapp.com",
+        projectId: "dot-mandala-lms",
+        storageBucket: "dot-mandala-lms.appspot.com",
+        messagingSenderId: "815985106033",
+        appId: "1:815985106033:web:4e770d4497b175025d8fd0"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // --- Auth State Observer & Security Check ---
+    auth.onAuthStateChanged(user => {
+        const containerWrapper = document.getElementById('container-wrapper');
+        // Check if user is signed in AND has the admin flag from the login page
+        if (user && sessionStorage.getItem('isAdmin') === 'true') {
+            // User is an authenticated admin. Show the content.
+            console.log("Admin user is authenticated.");
+            containerWrapper.style.visibility = 'visible';
+            containerWrapper.style.opacity = '1';
+        } else {
+            // User is not an admin or not signed in. Redirect to login.
+            console.log("Access denied. Redirecting to admin login.");
+            window.location.href = "adminlogin.html";
+        }
+    });
+
+    // --- Logout Function ---
+    function logOut() {
+      // IMPORTANT: Clear the admin flag from session storage on logout
+      sessionStorage.removeItem('isAdmin');
+      auth.signOut().then(() => {
+          console.log("Logout successful.");
+          window.location.href = "adminlogin.html";
+      }).catch(error => {
+          console.error("Logout Error: ", error);
+      });
+    }
+  </script>
+</body>
+</html>

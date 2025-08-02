@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dot Mandala LMS - Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #4f46e5;
+      --secondary-color: #6366f1;
+      --background-color: #f8fafc;
+      --container-bg: #ffffff;
+      --text-color: #1e293b;
+      --subtle-text-color: #64748b;
+      --border-color: #e2e8f0;
+      --shadow-color: rgba(100, 116, 139, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    .container {
+      display: flex;
+      width: 100%;
+      max-width: 1400px;
+      height: 90vh;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px var(--shadow-color);
+      background-color: var(--container-bg);
+    }
+
+    /* Sidebar Styling */
+    .sidebar {
+      width: 280px;
+      padding: 2.5rem 1.5rem;
+      background-color: var(--container-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s ease-in-out;
+    }
+
+    .sidebar-header {
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+
+    .sidebar nav {
+      flex: 1;
+      margin-top: 2rem;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+    }
+
+    .sidebar nav ul li {
+      margin-bottom: 0.75rem;
+    }
+
+    .sidebar nav ul li a {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      color: var(--subtle-text-color);
+      font-weight: 500;
+      border-radius: 8px;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .sidebar nav ul li a:hover {
+      background-color: var(--background-color);
+      color: var(--primary-color);
+    }
+    
+    .sidebar nav ul li a.active {
+      background-color: var(--background-color);
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+
+    .sidebar nav ul li a i {
+      margin-right: 12px;
+      width: 20px;
+      text-align: center;
+    }
+    
+    .logout {
+        margin-top: auto;
+    }
+
+    .logout-btn {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: transparent;
+        border: 1px solid var(--border-color);
+        border-radius: 8px;
+        color: var(--subtle-text-color);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+    .logout-btn:hover {
+        background-color: var(--background-color);
+        color: var(--text-color);
+    }
+
+    /* Main Content Styling */
+    .main-content {
+      flex: 1;
+      padding: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    header {
+      margin-bottom: 2rem;
+    }
+
+    header h1 {
+      font-size: 2.25rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+    }
+
+    header p {
+      font-size: 1rem;
+      color: var(--subtle-text-color);
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .card {
+      background-color: var(--container-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px var(--shadow-color);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1024px) {
+      .container {
+        flex-direction: column;
+        height: auto;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--border-color);
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.5rem;
+      }
+      .sidebar-header {
+        border-bottom: none;
+        padding-bottom: 0;
+      }
+      .sidebar nav {
+        margin-top: 0;
+        flex: none;
+      }
+      .sidebar nav ul {
+        display: flex;
+        gap: 1.5rem;
+      }
+      .sidebar nav ul li a {
+        padding: 0.5rem 0.75rem;
+      }
+      .sidebar nav ul li a span {
+          display: none;
+      }
+      .sidebar nav ul li a i {
+          margin-right: 0;
+      }
+      .logout {
+          display: none;
+      }
+      .main-content {
+          padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  
+  <div class="container">
+    <aside class="sidebar">
+      <div>
+        <div class="sidebar-header">
+          <h2 class="logo">Dot Mandala</h2>
+        </div>
+        <nav>
+          <ul>
+            <!-- The 'active' class is for the current page -->
+            <li><a href="homepage.html" class="active"><i class="fas fa-home"></i> <span>Dashboard</span></a></li>
+            <!-- Correct file paths are assumed and added here -->
+            <li><a href="courses.html"><i class="fas fa-book-open"></i> <span>Courses</span></a></li>
+            <li><a href="assignments.html"><i class="fas fa-chalkboard-teacher"></i> <span>Assignments</span></a></li>
+            <li><a href="progress.html"><i class="fas fa-chart-line"></i> <span>Progress</span></a></li>
+            <li><a href="messages.html"><i class="fas fa-envelope"></i> <span>Messages</span></a></li>
+            <li><a href="settings.html"><i class="fas fa-cog"></i> <span>Settings</span></a></li>
+          </ul>
+        </nav>
+      </div>
+      <div class="logout">
+          <!-- The logout button now has an onclick handler -->
+          <button class="logout-btn" onclick="logOut()">Log Out</button>
+      </div>
+    </aside>
+    <main class="main-content">
+      <header>
+        <h1>Dashboard</h1>
+        <p>Welcome back, Student Name. Here's an overview of your progress.</p>
+      </header>
+      <section class="card-grid">
+        <div class="card">
+          <h3>Your Courses</h3>
+          <p>You are currently enrolled in 5 courses.</p>
+        </div>
+        <div class="card">
+          <h3>Upcoming Assignments</h3>
+          <p>You have 2 assignments due this week.</p>
+        </div>
+        <div class="card">
+          <h3>Latest Grade</h3>
+          <p>You received an A on your last quiz.</p>
+        </div>
+        <div class="card">
+          <h3>Course Progress</h3>
+          <p>You have completed 75% of your current course.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <script>
+    // This function handles the logout logic
+    function logOut() {
+      // In a real application, you would perform a Firebase or other auth logout here.
+      // For this demo, we'll just redirect to the login page.
+      window.location.href = "login new.html";
+    }
+
+    // You can also add functionality to highlight the active link based on the current page.
+    window.addEventListener('DOMContentLoaded', () => {
+        const path = window.location.pathname.split('/').pop();
+        const navLinks = document.querySelectorAll('.sidebar nav a');
+        navLinks.forEach(link => {
+            if (link.getAttribute('href') === path) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+    });
+  </script>
+</body>
+</html>
