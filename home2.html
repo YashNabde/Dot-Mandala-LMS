@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard - Dot Mandala</title>
+  <!-- Using the same fonts as the login and cover pages -->
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <style>
+    /* Using the same color and font variables for a cohesive UI */
+    :root {
+      --primary-color: #4f46e5;
+      --primary-color-dark: #4338ca;
+      --primary-color-light: #e0e7ff;
+      --background-color: #f8fafc;
+      --text-color: #1e293b;
+      --subtle-text-color: #64748b;
+      --container-bg: #ffffff;
+      --border-color: #e2e8f0;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      display: flex;
+    }
+
+    /* --- Sidebar Styling --- */
+    .sidebar {
+      width: 260px;
+      background-color: var(--container-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      padding: 1.5rem;
+      transition: width 0.3s;
+    }
+
+    .logo {
+      font-family: 'Bitter', serif;
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: var(--primary-color);
+      margin-bottom: 2.5rem;
+      padding-left: 0.5rem;
+    }
+
+    .sidebar nav ul {
+      list-style: none;
+    }
+
+    .sidebar nav ul li a {
+      display: flex;
+      align-items: center;
+      padding: 0.85rem 1rem;
+      text-decoration: none;
+      color: var(--subtle-text-color);
+      font-weight: 600;
+      border-radius: 8px;
+      margin-bottom: 0.5rem;
+      transition: background-color 0.2s, color 0.2s;
+    }
+
+    .sidebar nav ul li a .icon {
+      margin-right: 1rem;
+      width: 20px;
+      height: 20px;
+    }
+
+    .sidebar nav ul li a.active,
+    .sidebar nav ul li a:hover {
+      background-color: var(--primary-color-light);
+      color: var(--primary-color);
+    }
+    
+    .sidebar .logout-link {
+        margin-top: auto;
+    }
+
+    /* --- Main Content Styling --- */
+    .main-wrapper {
+      flex: 1;
+      height: 100vh;
+      overflow-y: auto;
+    }
+    
+    /* Top Header Bar */
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem 2.5rem;
+        background-color: var(--container-bg);
+        border-bottom: 1px solid var(--border-color);
+    }
+    
+    #user-greeting {
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+    
+    .primary-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+    .primary-btn:hover {
+      background-color: var(--primary-color-dark);
+    }
+
+    .main-content {
+      padding: 2.5rem;
+    }
+
+    .content-card {
+        background-color: var(--container-bg);
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        padding: 2rem;
+        box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    }
+    
+    /* UPDATED: Flex container for two-column layout */
+    .card-body {
+        display: flex;
+        align-items: flex-start;
+        gap: 2.5rem;
+    }
+
+    .text-content {
+        flex: 1;
+    }
+    
+    .text-content h1 {
+        font-family: 'Bitter', serif;
+        font-size: 1.75rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .text-content p {
+        color: var(--subtle-text-color);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+    }
+    
+    .video-wrapper {
+        flex-basis: 480px; /* Set a base width for the video column */
+    }
+
+    .video-container {
+        position: relative;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 0;
+        overflow: hidden;
+        background: #000;
+        border-radius: 8px;
+    }
+    
+    .video-container iframe {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 1024px) {
+        .card-body {
+            flex-direction: column;
+        }
+        .video-wrapper {
+            width: 100%;
+            flex-basis: auto;
+        }
+    }
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem;
+      }
+      .sidebar nav {
+        display: none;
+      }
+      .header {
+        padding: 1.5rem;
+      }
+      .main-content {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>  
+  <aside class="sidebar">
+    <div>
+      <h2 class="logo">Dot Mandala</h2>
+      <nav>
+        <ul>
+          <li><a href="./home2.html" class="active">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span>Home</span>
+          </a></li>
+          <li><a href="./courses.html">
+            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v11.494m-9-5.747h18"></path></svg>
+            <span>Courses</span>
+          </a></li>
+        </ul>
+      </nav>
+    </div>
+    <nav class="logout-link">
+        <ul>
+            <li><a href="#" onclick="logout()">
+                <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                <span>Logout</span>
+            </a></li>
+        </ul>
+    </nav>
+  </aside>
+
+  <div class="main-wrapper">
+    <header class="header">
+        <div id="user-greeting">Welcome!</div>
+        <a href="./courses.html" class="primary-btn">Purchase Course</a>
+    </header>
+    <main class="main-content">
+      <div class="content-card">
+        <div class="card-body">
+          <div class="text-content">
+            <h1>Free Demo Lecture</h1>
+            <p>Get a glimpse of our teaching style with this free introductory video on the basics of Dot Mandala art. This preview covers essential tools, techniques, and the mindful approach that makes this art form so therapeutic.</p>
+          </div>
+          <div class="video-wrapper">
+            <div class="video-container">
+                <iframe id="player" src="https://www.youtube.com/embed/mk-NX1gIRZc?enablejsapi=1"
+                    title="YouTube video player" frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  
+  <!-- ADDED: YouTube Iframe API Script -->
+  <script src="https://www.youtube.com/iframe_api"></script>
+  <script>
+    // --- Firebase Configuration ---
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    /* --- UPDATED: Authentication State Listener is commented out for verification ---
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            // User is signed in.
+            const userName = user.displayName;
+            const userGreeting = document.getElementById('user-greeting');
+            if (userName) {
+                userGreeting.textContent = `Welcome, ${userName}!`;
+            }
+        } else {
+            // User is signed out. Redirect to login page.
+            window.location.href = "login new.html";
+        }
+    });
+    */
+
+    // --- Logout Function ---
+    function logout() {
+        auth.signOut().catch((error) => {
+            console.error("Logout Error:", error);
+        });
+    }
+
+    // --- YouTube Player Fullscreen Logic ---
+    let player;
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        events: {
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerStateChange(event) {
+      // Check if the video is playing
+      if (event.data == YT.PlayerState.PLAYING) {
+        let iframe = document.getElementById('player');
+        // Request fullscreen
+        if (iframe.requestFullscreen) {
+          iframe.requestFullscreen();
+        } else if (iframe.mozRequestFullScreen) { /* Firefox */
+          iframe.mozRequestFullScreen();
+        } else if (iframe.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+          iframe.webkitRequestFullscreen();
+        } else if (iframe.msRequestFullscreen) { /* IE/Edge */
+          iframe.msRequestFullscreen();
+        }
+      }
+    }
+  </script>
+</body>
+</html>
