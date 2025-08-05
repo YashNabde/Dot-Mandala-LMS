@@ -1,166 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dot Mandala LMS</title>
-
-  <!-- Google Font: Lobster -->
-  <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&family=Sacramento&display=swap" rel="stylesheet">
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dot Mandala - Find Your Center Through Art</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:wght@400;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    * {
+    :root {
+      --primary-color: #4f46e5;
+      --primary-color-dark: #4338ca;
+      --background-color: #f8fafc;
+      --text-color: #1e293b;
+      --subtle-text-color: #64748b;
+      --container-bg: #ffffff;
+      --border-color: #e2e8f0;
+    }
+
+    body {
       margin: 0;
-      padding: 0;
-      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+      color: var(--text-color);
+      background-color: var(--background-color);
+      scroll-behavior: smooth;
     }
 
-    body, html {
-      height: 100%;
-      overflow: hidden;
-      font-family: 'Lobster', cursive;
-    }
-
-    .video-bg {
+    /* --- Header & Navigation --- */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.5rem 5%;
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-color);
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -1;
+      right: 0;
+      z-index: 1000;
     }
 
-    .content {
-      position: relative;
-      height: 100vh;
-      width: 100%;
+    .logo {
+      font-family: 'Bitter', serif;
+      font-weight: 700;
+      font-size: 1.75rem;
+      color: var(--primary-color);
+      text-decoration: none;
+    }
+
+    .nav-links a {
+      margin-left: 2rem;
+      text-decoration: none;
+      color: var(--text-color);
+      font-weight: 500;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover {
+      color: var(--primary-color);
+    }
+
+    .primary-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background-color 0.2s;
+    }
+    .primary-btn:hover {
+      background-color: var(--primary-color-dark);
+    }
+
+    /* --- Hero Section --- */
+    .hero {
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      color: white;
       text-align: center;
-      padding: 0 20px;
+      height: 100vh;
+      color: white;
+      background-image: url('https://images.pexels.com/photos/7182162/pexels-photo-7182162.jpeg');
+      background-size: cover;
+      background-position: center;
+      position: relative;
     }
 
-    h1 {
-      font-size: 6rem;
-      margin-bottom: 1rem;
-      animation: fadeInDown 1.5s ease-out forwards;
-      opacity: 0;
-    }
-
-    p {
-      font-size: 1.5rem;
-      animation: fadeInUp 2s ease-out forwards;
-      opacity: 0;
-    }
-
-    /* Keyframe animations */
-    @keyframes fadeInDown {
-      0% {
-        opacity: 0;
-        transform: translateY(-30px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    @keyframes fadeInUp {
-      0% {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    /* Optional dark overlay for readability */
-    .overlay {
+    .hero::before {
+      content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      height: 100%;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 0;
-}
-.animated-text {
-  animation: fadeIn 2s ease-in-out forwards;
-}
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+    }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      padding: 2rem;
+      animation: fadeInDown 1s ease-out;
+    }
 
-.get-started-btn {
-  display: inline-block;
-  padding: 8px 100px;
-  margin-top: 20px;
-  font-size: 1.2rem;
-  color: white;
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid silver;
-  border-radius: 25px;
-  text-decoration: none;
-  font-weight: bold;
-  transition: 0.3s ease;
-  backdrop-filter: blur(5px);
-}
+    .hero h1 {
+      font-family: 'Bitter', serif;
+      font-size: 4rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
 
-.get-started-btn:hover {
-  background-color: white;
-  color: black;
-  transform: scale(1.05);
-}
+    .hero p {
+      font-size: 1.25rem;
+      margin-bottom: 2.5rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
 
+    /* --- Sections --- */
+    .section {
+      padding: 6rem 5%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-family: 'Bitter', serif;
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+    
+    .section-subtitle {
+        text-align: center;
+        color: var(--subtle-text-color);
+        font-size: 1.1rem;
+        max-width: 700px;
+        margin: 0 auto 4rem auto;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2.5rem;
+    }
+
+    .feature-card {
+      background-color: var(--container-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 2rem;
+      text-align: center;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+    }
+    
+    .feature-card .icon {
+        height: 50px;
+        width: 50px;
+        color: var(--primary-color);
+        margin-bottom: 1.5rem;
+    }
+
+    .feature-card h3 {
+      font-family: 'Bitter', serif;
+      font-size: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card p {
+      color: var(--subtle-text-color);
+      line-height: 1.6;
+    }
+    
+    /* --- Footer --- */
+    .footer {
+        background-color: var(--text-color);
+        color: #a1a1aa;
+        padding: 4rem 5%;
+        text-align: center;
+    }
+    .footer .logo {
+        color: white;
+        margin-bottom: 1.5rem;
+        display: inline-block;
+    }
+    .footer p {
+        margin-bottom: 1.5rem;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @media (max-width: 768px) {
+        .nav-links { display: none; }
+        .hero h1 { font-size: 2.5rem; }
+        .hero p { font-size: 1.1rem; }
+        .section { padding: 4rem 5%; }
+    }
   </style>
 </head>
 <body>
-  <video autoplay muted loop class="video-bg">
-    <source src="https://videos.pexels.com/video-files/856382/856382-hd_1920_1080_30fps.mp4" type="video/mp4">
-    Your browser does not support the video tag.
-  </video>
 
-  <div class="overlay"></div>
+  <header class="header">
+    <a href="#" class="logo">Dot Mandala</a>
+    <nav class="nav-links">
+      <a href="#features">Benefits</a>
+      <a href="#about">About</a>
+    </nav>
+    <a href="./login new.html" class="primary-btn">Login / Sign Up</a>
+  </header>
 
-  <div class="content">
-     <h1 id="headline" class="animated-text"; style="font-family:'Sacramento', cursive">Dot Mandala Art</h1>
-    <p style="font-family: 'Dancing Script', cursive";>A Therapeutic Learning Platform for Mindfullness and Creative Expression.</p>
-<div id="button-container" style="display: none;">
-  <a href="login.html" class="get-started-btn">Let's Begin!</a>
-  </div>
-<script>
-  // Wait until the page loads
-  window.onload = function () {
-    const headline = document.getElementById('headline');
-    const buttonContainer = document.getElementById('button-container');
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <h1>Find Your Center, One Dot at a Time</h1>
+        <p>Discover the therapeutic power of Dot Mandala art. Our expert-led courses guide you through mindful creativity to reduce stress, improve focus, and create stunning works of art.</p>
+        <a href="./login new.html" class="primary-btn">Start Your Creative Journey</a>
+      </div>
+    </section>
 
-    // Get the duration of the CSS animation
-    headline.addEventListener('animationend', () => {
-      buttonContainer.style.display = 'block';
-      buttonContainer.style.opacity = 0;
-      buttonContainer.style.transition = 'opacity 0.8s ease';
-      setTimeout(() => {
-        buttonContainer.style.opacity = 2;
-      }, 50);
-    });
-  };
-</script>
+    <section id="features" class="section">
+      <h2 class="section-title">Embrace the Therapeutic Flow</h2>
+      <p class="section-subtitle">Dot Mandala art is more than just a craft; it's a meditative practice that brings calm and clarity. Our platform is designed to help you unlock these benefits.</p>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          <h3>Reduce Stress & Anxiety</h3>
+          <p>The repetitive, rhythmic nature of creating dot patterns is a proven method to calm the mind and ease daily pressures.</p>
+        </div>
+        <div class="feature-card">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+          <h3>Enhance Focus & Concentration</h3>
+          <p>Creating intricate mandalas requires present-moment awareness, training your mind to focus and block out distractions.</p>
+        </div>
+        <div class="feature-card">
+          <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-12v4m-2-2h4m5 10v4m-2-2h4M5 3a2 2 0 00-2 2v1m16 0V5a2 2 0 00-2-2h-1m-4 16l2 2l2-2m-4 0l-2-2l-2 2m4 0l2-2l2 2m-4 0l-2 2l-2-2"></path></svg>
+          <h3>Unlock Your Creativity</h3>
+          <p>Our courses provide the structure and techniques you need to express yourself freely and create beautiful, unique art.</p>
+        </div>
+      </div>
+    </section>
+    
+    <footer id="about" class="footer">
+        <a href="#" class="logo">Dot Mandala</a>
+        <p>Join our community and start your journey into the mindful art of dot painting.</p>
+        <p>&copy; 2025 Dot Mandala. All Rights Reserved.</p>
+    </footer>
+  </main>
+
 </body>
 </html>
